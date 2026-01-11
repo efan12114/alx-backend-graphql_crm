@@ -34,11 +34,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
-    'django_filters',   
+    'django_filters',  # ✅ Task 3 requirement
     'crm',
     'django_celery_beat',
     'django_celery_results',
-     
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -105,4 +105,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 GRAPHENE = {
     'SCHEMA': 'alx_backend_graphql_crm.schema.schema',
 }
-# Django-crntab settings

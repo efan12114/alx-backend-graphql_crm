@@ -18,7 +18,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
-    'django_filters',  # ✅ Task 3 requirement
+    'django_filters',  # Task 3 requirement
+    'django_crontab',  # Add this for django-crontab - MUST BE EXACT STRING
     'crm',
 ]
 
@@ -82,7 +83,34 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ✅ Task 0: GraphQL settings
+# Task 0: GraphQL settings
 GRAPHENE = {
     'SCHEMA': 'alx_backend_graphql_crm.schema.schema',
+}
+
+# Django-crontab settings for Task 2 & 3
+CRONJOBS = [  # MUST BE EXACT STRING "CRONJOBS"
+    # Heartbeat logger - every 5 minutes (Task 2)
+    ('*/5 * * * *', 'crm.cron.log_crm_heartbeat'),
+    
+    # Low stock updater - every 12 hours (Task 3)
+    ('0 */12 * * *', 'crm.cron.update_low_stock'),
+]
+
+# Celery Configuration for Task 4
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+# Celery Beat Schedule
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'generate-crm-report': {
+        'task': 'crm.tasks.generate_crm_report',
+        'schedule': crontab(day_of_week='mon', hour=6, minute=0),
+    },
 }
